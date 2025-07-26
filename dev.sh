@@ -10,18 +10,22 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-# Verificar si existe el archivo .env
-if [ ! -f .env ]; then
-    echo "⚠️  Archivo .env no encontrado."
-    echo "📋 Creando .env desde .env.example..."
+# Verificar si existe el archivo .env para desarrollo
+if [ ! -f .env.development ]; then
+    echo "⚠️  Archivo .env.development no encontrado."
+    echo "📋 Creando .env.development desde .env.example..."
     if [ -f .env.example ]; then
-        cp .env.example .env
-        echo "✅ Archivo .env creado. Por favor, revisa y ajusta las variables de entorno."
+        cp .env.example .env.development
+        echo "✅ Archivo .env.development creado."
+        echo "📝 Ajusta las configuraciones para desarrollo local (DATABASE_HOST=localhost, JPA_SHOW_SQL=true, etc.)"
     else
         echo "❌ Error: Archivo .env.example no encontrado."
         exit 1
     fi
 fi
+
+# Copiar configuración de desarrollo como .env para docker-compose
+cp .env.development .env
 
 # Detener contenedores existentes
 echo "🔄 Deteniendo contenedores existentes..."
@@ -57,13 +61,15 @@ echo "🎉 ¡Entorno de desarrollo listo!"
 echo ""
 echo "📍 Base de datos disponible en:"
 echo "   🗄️  Host: localhost"
-echo "   🔌 Puerto: 5432"
-echo "   📊 Base de datos: cca"
-echo "   👤 Usuario: postgres"
-echo "   🔑 Contraseña: 1234"
+echo "   🔌 Puerto: ${DB_EXTERNAL_PORT:-5432}"
+echo "   📊 Base de datos: ${DATABASE_NAME:-cca}"
+echo "   👤 Usuario: ${DATABASE_USERNAME:-postgres}"
+echo "   🔑 Contraseña: ${DATABASE_PASSWORD:-1234}"
 echo ""
 echo "🚀 Para ejecutar la aplicación Spring Boot:"
 echo "   mvn spring-boot:run"
+echo ""
+echo "📝 Configuración utilizada: .env.development"
 echo ""
 echo "🛑 Para detener PostgreSQL:"
 echo "   docker-compose -f compose.yaml stop postgres"

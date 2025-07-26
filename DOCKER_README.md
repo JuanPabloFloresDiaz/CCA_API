@@ -109,21 +109,40 @@ docker-compose -f compose.yaml build api --no-cache
 ## 🏗️ Estructura de Archivos Docker
 
 ```
-├── Dockerfile              # Imagen de la aplicación Spring Boot
-├── docker-compose.yaml     # Orquestación de servicios
-├── .dockerignore           # Archivos a ignorar en la construcción
-├── deploy.sh               # Script de despliegue automatizado
-├── dev.sh                 # Script para desarrollo local
+├── Dockerfile                    # Imagen de la aplicación Spring Boot
+├── docker-compose.yaml           # Orquestación de servicios
+├── .dockerignore                 # Archivos a ignorar en la construcción
+├── deploy.sh                     # Script de despliegue automatizado
+├── dev.sh                       # Script para desarrollo local
+├── .env                         # Variables de entorno (Docker)
+├── .env.development             # Variables de entorno (Desarrollo local)
+├── .env.example                 # Plantilla de variables de entorno
 └── src/main/resources/
-    ├── application.properties         # Configuración base
-    ├── application-docker.properties  # Configuración específica para Docker
-    └── db/migration/                  # Scripts de migración
+    ├── application.properties    # Configuración unificada
+    └── db/migration/            # Scripts de migración
 ```
 
-## 🔄 Perfiles de Spring
+## 🔄 Configuración Unificada
 
-- **Perfil por defecto**: Usa configuración local con variables de entorno
-- **Perfil `docker`**: Configuración optimizada para contenedores
+Ahora usamos un **único archivo** `application.properties` que se adapta automáticamente al entorno mediante variables de entorno:
+
+- **Desarrollo local**: Usa `.env.development` (JPA auto-DDL, SQL verbose, localhost)
+- **Docker/Producción**: Usa `.env` (Flyway, logs optimizados, servicios internos)
+
+## 📝 Configuración por Entorno
+
+### Para Desarrollo Local:
+```bash
+# El script dev.sh automáticamente usa .env.development
+./dev.sh
+mvn spring-boot:run
+```
+
+### Para Docker Completo:
+```bash
+# El script deploy.sh usa el archivo .env principal
+./deploy.sh
+```
 
 ## 🧪 Health Checks
 

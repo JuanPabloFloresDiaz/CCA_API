@@ -53,7 +53,7 @@ services:
       APPLICATION_KEY: ${APPLICATION_KEY}
       
       # Configuración JVM
-      JAVA_OPTS: "-Xmx512m -Xms256m -Dspring.profiles.active=docker"
+      JAVA_OPTS: "-Xmx512m -Xms256m"
     ports:
       - "${API_EXTERNAL_PORT}:8080"
     depends_on:
