@@ -1,0 +1,55 @@
+# Archivos y directorios a ignorar durante la construcción de Docker
+
+# Directorio target de Maven
+target/
+
+# Archivos de configuración local y secretos
+.env
+.env.*
+!.env.example
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de respaldo
+*.bak
+*.backup
+
+# Archivos de Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+compose.yaml
+*.dockerignore
+
+# Documentación
+README.md
+HELP.md
+docs/
+
+# Archivos de testing
+coverage/
+test-results/
