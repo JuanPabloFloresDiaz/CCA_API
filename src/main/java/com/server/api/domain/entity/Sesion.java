@@ -78,33 +78,26 @@ public class Sesion extends BaseEntity {
     }
 
     /**
-     * Método para cerrar la sesión
-     */
-    public void cerrarSesion() {
-        this.estado = EstadoSesion.CERRADA;
-        this.fechaFin = OffsetDateTime.now();
-    }
-
-    /**
-     * Método para marcar la sesión como expirada
-     */
-    public void expirar() {
-        this.estado = EstadoSesion.EXPIRADA;
-        this.fechaFin = OffsetDateTime.now();
-    }
-
-    /**
-     * Verifica si la sesión está activa
+     * Verifica si la sesión está activa.
+     * Método de consulta simple.
      */
     public boolean estaActiva() {
-        return this.estado == EstadoSesion.ACTIVA && 
-               OffsetDateTime.now().isBefore(this.fechaExpiracion);
+        return EstadoSesion.ACTIVA.equals(this.estado);
     }
 
     /**
-     * Verifica si la sesión ha expirado
+     * Verifica si la sesión ha expirado por tiempo.
+     * Método de consulta simple.
      */
-    public boolean haExpirado() {
+    public boolean haExpiradoPorTiempo() {
         return OffsetDateTime.now().isAfter(this.fechaExpiracion);
+    }
+
+    /**
+     * Verifica si la sesión está cerrada.
+     * Método de consulta simple.
+     */
+    public boolean estaCerrada() {
+        return EstadoSesion.CERRADA.equals(this.estado);
     }
 }
