@@ -17,8 +17,8 @@ import lombok.Setter;
 
 /**
  * Entidad que representa los usuarios del sistema.
- * Incluye información de autenticación, seguridad y gestión de contraseñas.
- * Sigue el principio SRP al manejar únicamente información de usuarios.
+ * Sigue el principio SRP al manejar únicamente datos de usuarios.
+ * La lógica de negocio se delega a servicios especializados.
  */
 @Entity
 @Table(name = "usuarios")
@@ -96,34 +96,21 @@ public class Usuario extends BaseEntity {
         }
     }
 
+    // ✅ Solo métodos de consulta simple (queries), sin lógica de negocio
+    
     /**
-     * Método para incrementar intentos fallidos de sesión
+     * Verifica si el usuario tiene 2FA activo.
+     * Método de consulta simple, sin lógica de negocio.
      */
-    public void incrementarIntentosFallidos() {
-        this.intentosFallidosSesion++;
-        this.fechaUltimoIntentoFallido = OffsetDateTime.now();
+    public boolean tieneDosFactorActivo() {
+        return Boolean.TRUE.equals(this.dosFactorActivo);
     }
 
     /**
-     * Método para resetear intentos fallidos de sesión
+     * Verifica si el usuario está en estado activo.
+     * Método de consulta simple, sin lógica de negocio.
      */
-    public void resetearIntentosFallidos() {
-        this.intentosFallidosSesion = 0;
-        this.fechaUltimoIntentoFallido = null;
-        this.fechaBloqueoSesion = null;
-    }
-
-    /**
-     * Método para bloquear usuario por intentos fallidos
-     */
-    public void bloquearPorIntentosFallidos() {
-        this.fechaBloqueoSesion = OffsetDateTime.now();
-    }
-
-    /**
-     * Verifica si el usuario está bloqueado
-     */
-    public boolean estaBloqueado() {
-        return this.fechaBloqueoSesion != null;
+    public boolean estaActivo() {
+        return EstadoUsuario.ACTIVO.equals(this.estado);
     }
 }
