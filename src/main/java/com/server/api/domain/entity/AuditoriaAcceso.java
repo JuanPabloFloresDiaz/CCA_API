@@ -23,7 +23,7 @@ import lombok.Setter;
  * Sigue el principio SRP al manejar únicamente información de auditoría.
  * 
  * Nota: Esta entidad NO extiende BaseEntity porque usa una clave compuesta
- * y maneja sus propios campos de auditoría.
+ * y tiene campos de auditoría específicos para particionamiento.
  */
 @Entity
 @Table(name = "auditoria_accesos")
@@ -94,60 +94,18 @@ public class AuditoriaAcceso {
     }
 
     /**
-     * Realiza un borrado lógico estableciendo la fecha de eliminación.
+     * Verifica si la auditoría fue exitosa.
+     * Método de consulta simple.
      */
-    public void softDelete() {
-        this.deletedAt = OffsetDateTime.now();
-        this.updatedAt = OffsetDateTime.now();
+    public boolean fueExitosa() {
+        return EstadoAuditoria.EXITOSO.equals(this.estado);
     }
 
     /**
-     * Verifica si la entidad ha sido borrada lógicamente.
+     * Verifica si tiene usuario asociado.
+     * Método de consulta simple.
      */
-    public boolean isDeleted() {
-        return this.deletedAt != null;
-    }
-
-    /**
-     * Restaura una entidad borrada lógicamente.
-     */
-    public void restore() {
-        this.deletedAt = null;
-        this.updatedAt = OffsetDateTime.now();
-    }
-
-    /**
-     * Constructor de conveniencia para crear auditorías exitosas
-     */
-    public static AuditoriaAcceso exitoso(Usuario usuario, String emailUsuario, 
-                                         Aplicacion aplicacion, Accion accion,
-                                         String ipOrigen, String mensaje) {
-        AuditoriaAcceso auditoria = new AuditoriaAcceso();
-        auditoria.setId(new AuditoriaAccesoId(java.util.UUID.randomUUID(), OffsetDateTime.now()));
-        auditoria.setUsuario(usuario);
-        auditoria.setEmailUsuario(emailUsuario);
-        auditoria.setAplicacion(aplicacion);
-        auditoria.setAccion(accion);
-        auditoria.setIpOrigen(ipOrigen);
-        auditoria.setMensaje(mensaje);
-        auditoria.setEstado(EstadoAuditoria.EXITOSO);
-        return auditoria;
-    }
-
-    /**
-     * Constructor de conveniencia para crear auditorías fallidas
-     */
-    public static AuditoriaAcceso fallido(String emailUsuario, Aplicacion aplicacion, 
-                                         Accion accion, String ipOrigen, String mensaje) {
-        AuditoriaAcceso auditoria = new AuditoriaAcceso();
-        auditoria.setId(new AuditoriaAccesoId(java.util.UUID.randomUUID(), OffsetDateTime.now()));
-        auditoria.setUsuario(null); // Sin usuario para intentos fallidos
-        auditoria.setEmailUsuario(emailUsuario);
-        auditoria.setAplicacion(aplicacion);
-        auditoria.setAccion(accion);
-        auditoria.setIpOrigen(ipOrigen);
-        auditoria.setMensaje(mensaje);
-        auditoria.setEstado(EstadoAuditoria.FALLIDO);
-        return auditoria;
+    public boolean tieneUsuario() {
+        return this.usuario != null;
     }
 }
