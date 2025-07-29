@@ -24,12 +24,12 @@ import com.server.api.domain.dto.seccion.SeccionCreateRequest;
 import com.server.api.domain.dto.seccion.SeccionResponse;
 import com.server.api.domain.dto.seccion.SeccionSummary;
 import com.server.api.domain.dto.seccion.SeccionUpdateRequest;
+import com.server.api.presentation.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -57,33 +57,35 @@ public class SeccionController {
         description = "Crea una nueva sección en el sistema. El nombre debe ser único."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "201",
             description = "Sección creada exitosamente",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeccionResponse.class))
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "400",
             description = "Datos inválidos o nombre duplicado",
             content = @Content(mediaType = "application/json")
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "422",
             description = "Error de validación",
             content = @Content(mediaType = "application/json")
         )
     })
     @PostMapping
-    public ResponseEntity<SeccionResponse> crear(
+    public ResponseEntity<ApiResponse<SeccionResponse>> crear(
             @Valid @RequestBody 
             @Parameter(description = "Datos para crear la sección", required = true)
             SeccionCreateRequest request) {
         
         try {
             SeccionResponse response = seccionService.crear(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse<>("Sección creada exitosamente", response));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse<>(e.getMessage(), null));
         }
     }
 
@@ -92,26 +94,26 @@ public class SeccionController {
         description = "Obtiene la información completa de una sección específica."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Sección encontrada",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeccionResponse.class))
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "404",
             description = "Sección no encontrada",
             content = @Content(mediaType = "application/json")
         )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<SeccionResponse> obtenerPorId(
+    public ResponseEntity<ApiResponse<SeccionResponse>> obtenerPorId(
             @PathVariable 
             @Parameter(description = "ID único de la sección", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             UUID id) {
         
         try {
             SeccionResponse response = seccionService.obtenerPorId(id);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ApiResponse<>("Sección encontrada exitosamente", response));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -122,14 +124,14 @@ public class SeccionController {
         description = "Obtiene una lista de todas las secciones activas del sistema."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Lista de secciones obtenida exitosamente",
             content = @Content(mediaType = "application/json")
         )
     })
     @GetMapping
-    public ResponseEntity<List<SeccionSummary>> obtenerTodas(
+    public ResponseEntity<ApiResponse<List<SeccionSummary>>> obtenerTodas(
             @RequestParam(value = "nombre", required = false)
             @Parameter(description = "Filtrar por nombre (búsqueda parcial)", example = "Gestión")
             String nombre,
@@ -148,7 +150,7 @@ public class SeccionController {
             secciones = seccionService.obtenerTodas();
         }
         
-        return ResponseEntity.ok(secciones);
+        return ResponseEntity.ok(new ApiResponse<>("Lista de secciones obtenida exitosamente", secciones));
     }
 
     @Operation(
@@ -156,14 +158,14 @@ public class SeccionController {
         description = "Obtiene una lista paginada de secciones activas."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Página de secciones obtenida exitosamente",
             content = @Content(mediaType = "application/json")
         )
     })
     @GetMapping("/paginated")
-    public ResponseEntity<Page<SeccionSummary>> obtenerTodasPaginado(
+    public ResponseEntity<ApiResponse<Page<SeccionSummary>>> obtenerTodasPaginado(
             @PageableDefault(size = 10, sort = "nombre")
             @Parameter(description = "Configuración de paginación (page, size, sort)")
             Pageable pageable,
@@ -180,7 +182,7 @@ public class SeccionController {
             secciones = seccionService.obtenerTodas(pageable);
         }
         
-        return ResponseEntity.ok(secciones);
+        return ResponseEntity.ok(new ApiResponse<>("Página de secciones obtenida exitosamente", secciones));
     }
 
     @Operation(
@@ -188,29 +190,29 @@ public class SeccionController {
         description = "Actualiza la información de una sección existente."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Sección actualizada exitosamente",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeccionResponse.class))
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "400",
             description = "Datos inválidos o nombre duplicado",
             content = @Content(mediaType = "application/json")
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "404",
             description = "Sección no encontrada",
             content = @Content(mediaType = "application/json")
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "422",
             description = "Error de validación",
             content = @Content(mediaType = "application/json")
         )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<SeccionResponse> actualizar(
+    public ResponseEntity<ApiResponse<SeccionResponse>> actualizar(
             @PathVariable 
             @Parameter(description = "ID único de la sección", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             UUID id,
@@ -221,11 +223,12 @@ public class SeccionController {
         
         try {
             SeccionResponse response = seccionService.actualizar(id, request);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ApiResponse<>("Sección actualizada exitosamente", response));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse<>(e.getMessage(), null));
         }
     }
 
@@ -234,25 +237,25 @@ public class SeccionController {
         description = "Elimina una sección del sistema (soft delete). La sección puede ser restaurada posteriormente."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "204",
             description = "Sección eliminada exitosamente"
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "404",
             description = "Sección no encontrada",
             content = @Content(mediaType = "application/json")
         )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(
+    public ResponseEntity<ApiResponse<Void>> eliminar(
             @PathVariable 
             @Parameter(description = "ID único de la sección", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             UUID id) {
         
         try {
             seccionService.eliminar(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(new ApiResponse<>("Sección eliminada exitosamente", null));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -263,35 +266,36 @@ public class SeccionController {
         description = "Restaura una sección que fue eliminada previamente."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Sección restaurada exitosamente",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeccionResponse.class))
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "400",
             description = "La sección no está eliminada o nombre duplicado",
             content = @Content(mediaType = "application/json")
         ),
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "404",
             description = "Sección no encontrada",
             content = @Content(mediaType = "application/json")
         )
     })
     @PostMapping("/{id}/restaurar")
-    public ResponseEntity<SeccionResponse> restaurar(
+    public ResponseEntity<ApiResponse<SeccionResponse>> restaurar(
             @PathVariable 
             @Parameter(description = "ID único de la sección", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             UUID id) {
         
         try {
             SeccionResponse response = seccionService.restaurar(id);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ApiResponse<>("Sección restaurada exitosamente", response));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException | IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse<>(e.getMessage(), null));
         }
     }
 
@@ -300,18 +304,18 @@ public class SeccionController {
         description = "Obtiene información estadística sobre las secciones del sistema."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Estadísticas obtenidas exitosamente",
             content = @Content(mediaType = "application/json")
         )
     })
     @GetMapping("/estadisticas")
-    public ResponseEntity<EstadisticasSecciones> obtenerEstadisticas() {
+    public ResponseEntity<ApiResponse<EstadisticasSecciones>> obtenerEstadisticas() {
         long totalSecciones = seccionService.contarSecciones();
         
         EstadisticasSecciones estadisticas = new EstadisticasSecciones(totalSecciones);
-        return ResponseEntity.ok(estadisticas);
+        return ResponseEntity.ok(new ApiResponse<>("Estadísticas obtenidas exitosamente", estadisticas));
     }
 
     @Operation(
@@ -319,14 +323,14 @@ public class SeccionController {
         description = "Verifica si un nombre de sección está disponible para uso."
     )
     @ApiResponses(value = {
-        @ApiResponse(
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "Resultado de la verificación obtenido",
             content = @Content(mediaType = "application/json")
         )
     })
     @GetMapping("/verificar-nombre")
-    public ResponseEntity<DisponibilidadNombre> verificarNombre(
+    public ResponseEntity<ApiResponse<DisponibilidadNombre>> verificarNombre(
             @RequestParam("nombre") 
             @Parameter(description = "Nombre a verificar", required = true, example = "Nueva Sección")
             String nombre) {
@@ -334,7 +338,8 @@ public class SeccionController {
         boolean existe = seccionService.existePorNombre(nombre);
         DisponibilidadNombre disponibilidad = new DisponibilidadNombre(nombre, !existe, existe);
         
-        return ResponseEntity.ok(disponibilidad);
+        String mensaje = existe ? "El nombre ya está en uso" : "El nombre está disponible";
+        return ResponseEntity.ok(new ApiResponse<>(mensaje, disponibilidad));
     }
 
     // DTOs para respuestas específicas del controlador
