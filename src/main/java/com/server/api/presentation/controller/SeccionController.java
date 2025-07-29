@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.api.application.service.SeccionService;
+import com.server.api.domain.dto.seccion.DisponibilidadNombre;
+import com.server.api.domain.dto.seccion.EstadisticasSecciones;
 import com.server.api.domain.dto.seccion.SeccionCreateRequest;
 import com.server.api.domain.dto.seccion.SeccionResponse;
 import com.server.api.domain.dto.seccion.SeccionSummary;
@@ -341,24 +343,4 @@ public class SeccionController {
         String mensaje = existe ? "El nombre ya está en uso" : "El nombre está disponible";
         return ResponseEntity.ok(new ApiResponse<>(mensaje, disponibilidad));
     }
-
-    // DTOs para respuestas específicas del controlador
-
-    @Schema(description = "Estadísticas de secciones")
-    public record EstadisticasSecciones(
-            @Schema(description = "Total de secciones activas", example = "25")
-            long totalSecciones
-    ) {}
-
-    @Schema(description = "Disponibilidad de nombre de sección")
-    public record DisponibilidadNombre(
-            @Schema(description = "Nombre verificado", example = "Nueva Sección")
-            String nombre,
-            
-            @Schema(description = "Indica si el nombre está disponible", example = "true")
-            boolean disponible,
-            
-            @Schema(description = "Indica si el nombre ya existe", example = "false")
-            boolean existe
-    ) {}
 }
