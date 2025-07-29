@@ -6,6 +6,7 @@ import com.server.api.domain.dto.aplicacion.AplicacionCreateRequest;
 import com.server.api.domain.dto.aplicacion.AplicacionResponse;
 import com.server.api.domain.dto.aplicacion.AplicacionSummary;
 import com.server.api.domain.dto.aplicacion.AplicacionUpdateRequest;
+import com.server.api.domain.dto.aplicacion.EstadoAplicacionDto;
 import com.server.api.domain.entity.Aplicacion;
 import com.server.api.domain.entity.Aplicacion.EstadoAplicacion;
 
@@ -16,6 +17,40 @@ import com.server.api.domain.entity.Aplicacion.EstadoAplicacion;
  */
 @Component
 public class AplicacionMapper {
+
+    /**
+     * Convierte un EstadoAplicacionDto a EstadoAplicacion de dominio.
+     * 
+     * @param estadoDto el DTO del estado
+     * @return el enum de dominio
+     */
+    public EstadoAplicacion toEntityEstado(EstadoAplicacionDto estadoDto) {
+        if (estadoDto == null) {
+            return EstadoAplicacion.ACTIVO;
+        }
+        
+        return switch (estadoDto) {
+            case ACTIVO -> EstadoAplicacion.ACTIVO;
+            case INACTIVO -> EstadoAplicacion.INACTIVO;
+        };
+    }
+    
+    /**
+     * Convierte un EstadoAplicacion de dominio a EstadoAplicacionDto.
+     * 
+     * @param estado el enum de dominio
+     * @return el DTO del estado
+     */
+    public EstadoAplicacionDto toDtoEstado(EstadoAplicacion estado) {
+        if (estado == null) {
+            return EstadoAplicacionDto.ACTIVO;
+        }
+        
+        return switch (estado) {
+            case ACTIVO -> EstadoAplicacionDto.ACTIVO;
+            case INACTIVO -> EstadoAplicacionDto.INACTIVO;
+        };
+    }
 
     /**
      * Convierte un AplicacionCreateRequest a entidad Aplicacion.
