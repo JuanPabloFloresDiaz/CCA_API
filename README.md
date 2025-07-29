@@ -23,7 +23,10 @@ mvn clean install
 docker-compose up -d
 
 # Ejecutar en modo desarrollo
-mvn spring-boot:run
+./scripts/dev.sh
+
+# Despliegue
+./scripts/deploy.sh
 ```
 
 ## 🧪 Testing
@@ -33,6 +36,10 @@ mvn test
 
 # Ejecutar tests específicos
 mvn test -Dtest="SeccionServiceTest,SeccionDtoTest"
+
+# Probar APIs con scripts
+./scripts/test_api.sh           # API de Secciones
+./scripts/test_aplicaciones_api.sh  # API de Aplicaciones
 ```
 
 ## 📚 Documentación
@@ -43,6 +50,7 @@ Toda la documentación del proyecto se encuentra en la carpeta [`docs/`](./docs/
 - **[Implementación de Secciones](./docs/RESUMEN_SECCIONES.md)** - CRUD completo de Secciones
 - **[Configuración Docker](./docs/DOCKER_README.md)** - Setup y configuración
 - **[Principios de Desarrollo](./docs/)** - Referencias y mejores prácticas
+- **[Códigos de Estado HTTP](./docs/http_status_codes.help.md)** - Guía de códigos HTTP correctos
 
 ## 🔧 Tecnologías
 
@@ -55,9 +63,12 @@ Toda la documentación del proyecto se encuentra en la carpeta [`docs/`](./docs/
 ## 📊 Estado del Proyecto
 
 - ✅ **Secciones CRUD**: Implementado y probado (24/24 tests)
-- 🚧 **Próximas entidades**: En planificación
+- ✅ **Aplicaciones CRUD**: Implementado y probado 
+- ✅ **Arquitectura SOLID**: Principios implementados y validados
+- ✅ **DTOs especializados**: CreateRequest, UpdateRequest, Response, Summary
 - ✅ **Testing Suite**: Configurada y funcionando
 - ✅ **Docker**: Configurado
+- ✅ **API Response**: Patrón consistente en todos los endpoints
 
 ## 🤝 Contribución
 
