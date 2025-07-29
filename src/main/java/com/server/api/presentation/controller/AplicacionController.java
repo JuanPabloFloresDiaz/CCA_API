@@ -195,16 +195,16 @@ public class AplicacionController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar aplicación", description = "Elimina una aplicación del sistema (eliminación lógica)")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Aplicación eliminada exitosamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Aplicación eliminada exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Aplicación no encontrada")
     })
-    public ResponseEntity<ApiResponse<Void>> eliminar(
+    public ResponseEntity<Void> eliminar(
             @Parameter(description = "ID de la aplicación a eliminar") @PathVariable UUID id) {
         try {
             aplicacionService.eliminar(id);
-            return ResponseEntity.ok(new ApiResponse<>("Aplicación eliminada exitosamente", null));
+            return ResponseEntity.noContent().build(); // 204 No Content
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // 404 Not Found
         }
     }
 
