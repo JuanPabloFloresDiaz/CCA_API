@@ -27,6 +27,7 @@ import com.server.api.domain.dto.aplicacion.AplicacionCreateRequest;
 import com.server.api.domain.dto.aplicacion.AplicacionResponse;
 import com.server.api.domain.dto.aplicacion.AplicacionSummary;
 import com.server.api.domain.dto.aplicacion.AplicacionUpdateRequest;
+import com.server.api.domain.dto.aplicacion.EstadoAplicacionDto;
 import com.server.api.domain.entity.Aplicacion;
 import com.server.api.domain.entity.Aplicacion.EstadoAplicacion;
 import com.server.api.domain.mapper.AplicacionMapper;
@@ -230,9 +231,11 @@ public class AplicacionController {
     @Operation(summary = "Cambiar estado", description = "Cambia el estado de una aplicación (ACTIVO/INACTIVO)")
     public ResponseEntity<ApiResponse<AplicacionResponse>> cambiarEstado(
             @Parameter(description = "ID de la aplicación") @PathVariable UUID id,
-            @Parameter(description = "Nuevo estado") @RequestParam EstadoAplicacion estado) {
+            @Parameter(description = "Nuevo estado") @RequestParam EstadoAplicacionDto estado) {
         try {
-            Aplicacion aplicacion = aplicacionService.cambiarEstado(id, estado);
+            // Convertir DTO a enum de dominio
+            EstadoAplicacion estadoDominio = aplicacionMapper.toEntityEstado(estado);
+            Aplicacion aplicacion = aplicacionService.cambiarEstado(id, estadoDominio);
             AplicacionResponse respuesta = aplicacionMapper.toResponse(aplicacion);
             return ResponseEntity.ok(new ApiResponse<>("Estado cambiado exitosamente", respuesta));
         } catch (IllegalArgumentException e) {
