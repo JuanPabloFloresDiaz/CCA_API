@@ -63,8 +63,8 @@ public class OpenApiConfig {
     private Contact buildContact() {
         return new Contact()
                 .name("Equipo de Desarrollo SGCCA")
-                .email("dev@sgcca.com")
-                .url("https://github.com/tu-usuario/sgcca-api");
+                .email("pablojuanfd@gmail.com")
+                .url("https://github.com/JuanPabloFloresDiaz/CCA_API");
     }
 
     private License buildLicense() {
