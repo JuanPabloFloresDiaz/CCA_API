@@ -250,16 +250,16 @@ public class SeccionController {
         )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> eliminar(
+    public ResponseEntity<Void> eliminar(
             @PathVariable 
             @Parameter(description = "ID único de la sección", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             UUID id) {
         
         try {
             seccionService.eliminar(id);
-            return ResponseEntity.ok(new ApiResponse<>("Sección eliminada exitosamente", null));
+            return ResponseEntity.noContent().build(); // 204 No Content
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // 404 Not Found
         }
     }
 
