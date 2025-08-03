@@ -36,6 +36,7 @@ mvn test
 
 # Ejecutar tests específicos
 mvn test -Dtest="SeccionServiceTest,SeccionDtoTest"
+mvn test -Dtest="*Accion*Test"  # Todos los tests de Acciones
 
 # Probar APIs con scripts
 ./scripts/test_api.sh           # API de Secciones
@@ -48,6 +49,7 @@ Toda la documentación del proyecto se encuentra en la carpeta [`docs/`](./docs/
 
 - **[Guías de Testing](./docs/TESTS_README.md)** - Información completa sobre testing
 - **[Implementación de Secciones](./docs/RESUMEN_SECCIONES.md)** - CRUD completo de Secciones
+- **[Implementación de Acciones](./docs/)** - CRUD completo de Acciones con 58 tests
 - **[Configuración Docker](./docs/DOCKER_README.md)** - Setup y configuración
 - **[Principios de Desarrollo](./docs/)** - Referencias y mejores prácticas
 - **[Códigos de Estado HTTP](./docs/http_status_codes.help.md)** - Guía de códigos HTTP correctos
@@ -64,11 +66,17 @@ Toda la documentación del proyecto se encuentra en la carpeta [`docs/`](./docs/
 
 - ✅ **Secciones CRUD**: Implementado y probado (24/24 tests)
 - ✅ **Aplicaciones CRUD**: Implementado y probado 
+- ✅ **Acciones CRUD**: Implementado y probado (58/58 tests)
+- ✅ **Suite de Testing Completa**: 3 módulos con cobertura total
+  - AccionDtoTest: 16 tests de validación DTO
+  - AccionServiceTest: 19 tests unitarios con Mockito
+  - AccionControllerIntegrationTest: 23 tests de integración
 - ✅ **Arquitectura SOLID**: Principios implementados y validados
 - ✅ **DTOs especializados**: CreateRequest, UpdateRequest, Response, Summary
 - ✅ **Testing Suite**: Configurada y funcionando
 - ✅ **Docker**: Configurado
 - ✅ **API Response**: Patrón consistente en todos los endpoints
+- ✅ **Patrones de Testing**: Consistencia entre Secciones, Aplicaciones y Acciones
 
 ## 🤝 Contribución
 
